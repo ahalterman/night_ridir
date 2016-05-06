@@ -5,7 +5,7 @@ from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.restful import Resource, reqparse
 from flask.ext.restful.representations.json import output_json
 
-config = utilities._get_data('data/config', 'PETR_config.ini')
+config = "/home/ahalterman/Projects/night_ridir/resources/PETR_config.ini"
 PETRreader.parse_Config(config)
 petrarch2.read_dictionaries()
 
@@ -13,7 +13,8 @@ class PhraseExtractAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=unicode, location='json')
-        super(CountryAPI, self).__init__()
+        self.reqparse.add_argument('parse', type=unicode, location='json')
+        super(PhraseExtractAPI, self).__init__()
 
     def get(self):
         return """ This service expects a POST in the form '{"text":""Airstrikes 
@@ -22,27 +23,35 @@ class PhraseExtractAPI(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
+        print args
         text = args['text']
         parse = args['parse']
         output = self.get_phrases(text, parse)
         return output
 
-    def get_phrases(text, parse):
+    def get_phrases(self, text, parse):
         parsed = utilities._format_parsed_str(parse)
 
-        ddict = {u'test123': 
+        ddict = {u'test123':
                 {u'sents': {u'0': {u'content': text, u'parsed': parsed}},
                  u'meta': {u'date': u'20010101'}}}
-
         return_dict = petrarch2.do_coding(ddict, None)
-        nouns = return_dict['test123'][u'meta'][u'verbs'][u'nouns']
-        k = return_dict['test123'][u'meta'][u'verbs'].keys()
-        t = [i for i in k if i != 'nouns']
-        if t:
-            verbs = [return_dict['test123'][u'meta'][u'verbs'][i][0] for i in t]
-        else:
+        
+        n = return_dict['test123']['meta']['verbs']['nouns']
+        nouns = [i[0] for i in n]
+        noun_coding = [i[1] for i in n]
+        try:
+            verbs = return_dict['test123']['meta']['verbs']['eventtext'].values()[0]
+        except KeyError:
+            print "No eventtext"
             verbs = ""
-        return {"nouns": nouns,
-               "verbs" : verbs}
-
-
+        try:
+            verb_coding = return_dict['test123']['meta']['verbs']['eventtext'].keys()[0][2]
+        except KeyError as e:
+            print e
+            verb_coding = ""
+        phrase_dict = {"nouns" : nouns,
+                       "noun_coding" : noun_coding,
+                      "verbs" : verbs,
+                      "verb_coding" : verb_coding}
+        return(phrase_dict)
