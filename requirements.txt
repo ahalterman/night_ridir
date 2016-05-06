@@ -1,3 +1,4 @@
 Flask==0.10.1
 Flask-HTTPAuth==2.5.0
 Flask-RESTful==0.3.3
+tornado==4.2

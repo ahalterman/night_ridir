@@ -4,8 +4,9 @@ from flask import jsonify, make_response
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.restful import Resource, reqparse
 from flask.ext.restful.representations.json import output_json
+import os
 
-config = "/home/ahalterman/Projects/night_ridir/resources/PETR_config.ini"
+config = "/app/resources/PETR_config.ini"
 PETRreader.parse_Config(config)
 petrarch2.read_dictionaries()
 
