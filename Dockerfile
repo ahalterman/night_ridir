@@ -13,6 +13,7 @@ RUN pip install git+https://github.com/openeventdata/petrarch2/
 
 WORKDIR /app
 RUN wget https://s3.amazonaws.com/mordecai-geo/GoogleNews-vectors-negative300.bin.gz
+RUN wget https://s3.amazonaws.com/ahalterman-textdata/wiki_ar_word2vec.model
 
 #RUN mkdir /home/ubuntu
 #WORKDIR /home/ubuntu
