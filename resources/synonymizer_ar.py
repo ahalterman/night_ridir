@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from gensim.models import Word2Vec
 import re
 from flask import jsonify, make_response
@@ -11,7 +12,7 @@ import itertools
 print "Loading word2vec model"
 word2vec_model = "/app/wiki_ar_word2vec.model"
 
-prebuilt = Word2Vec.load_word2vec_format(word2vec_model) #, binary=True)
+prebuilt = Word2Vec.load(word2vec_model)
 vocab_set = set(prebuilt.vocab.keys())
 print "Done loading"
 
@@ -28,7 +29,7 @@ class SynonymizeArAPI(Resource):
 
     def get_synonyms(self, word, match_n = 20):
     
-        word_combo = [word_upper, word_title, word_lower]
+        word_combo = word #[word_upper, word_title, word_lower]
     
         results_list = []
         for w in word_combo:
@@ -66,3 +67,4 @@ class SynonymizeArAPI(Resource):
             print "Word length is 0 or greater than 2"
             syns = []
         return syns
+
