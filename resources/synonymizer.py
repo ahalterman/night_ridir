@@ -24,7 +24,7 @@ class SynonymizeAPI(Resource):
 
     def get(self):
         return """ This service expects a POST in the form '{"text":["journalists"]}'.
-                It returns word2vec 'synonyms' of the term in the form '["REPORTER","INTERVIEWER"]'
+It returns word2vec 'synonyms' of the term in the form '["REPORTER","INTERVIEWER"]'. 
                 """
 
     def get_synonyms(self, word, match_n = 20):
@@ -42,7 +42,7 @@ class SynonymizeAPI(Resource):
                 #print [i[1] for i in results]
             except KeyError:
                 pass
-        return list(set(results_list))
+        return results_list
     
     def post(self):
         args = self.reqparse.parse_args()
@@ -55,9 +55,8 @@ class SynonymizeAPI(Resource):
             word = words[0]
             word = re.sub(" ", "_", word)
             syns = self.get_synonyms(word)
-        #if len(word) > 1:
-        #    word_list = re.sub(" ", "_", word)
-        #    syns = self.get_synonyms(word)
+            word_order = [i.find(word.upper()) for i in syns]
+            syns = [syn for (wo,syn) in sorted(zip(word_order, syns))][::-1]
         if len(words) == 2:
             word_list = [re.sub(" ", "_", w) for w in words]
             syns = []
@@ -73,4 +72,6 @@ class SynonymizeAPI(Resource):
         if len(words) == 0 or len(words) > 2:
             print "Word length is 0 or greater than 2"
             syns = []
+        
+        # sort by string match
         return syns
