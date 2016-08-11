@@ -5,12 +5,14 @@ from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from resources.extract_phrases import PhraseExtractAPI
 from resources.synonymizer import SynonymizeAPI
+from resources.synonymizer_ar import SynonymizeArAPI
 
 app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(PhraseExtractAPI, '/get_phrases')
 api.add_resource(SynonymizeAPI, '/get_synonyms')
+api.add_resource(SynonymizeAPI, '/get_synonyms_ar')
 
 if __name__ == '__main__':
     http_server = HTTPServer(WSGIContainer(app))
