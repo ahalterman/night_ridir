@@ -55,6 +55,7 @@ It returns word2vec 'synonyms' of the term in the form '["REPORTER","INTERVIEWER
             word = words[0]
             word = re.sub(" ", "_", word)
             syns = self.get_synonyms(word)
+            syns = list(set(syns))
             word_order = [i.find(word.upper()) for i in syns]
             syns = [syn for (wo,syn) in sorted(zip(word_order, syns))][::-1]
         if len(words) == 2:
@@ -73,5 +74,4 @@ It returns word2vec 'synonyms' of the term in the form '["REPORTER","INTERVIEWER
             print "Word length is 0 or greater than 2"
             syns = []
         
-        # sort by string match
         return syns
