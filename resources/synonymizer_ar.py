@@ -20,17 +20,16 @@ class SynonymizeArAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('text', type=unicode, location='json')
-        super(SynonymizeAPI, self).__init__()
+        super(SynonymizeArAPI, self).__init__()
 
     def get(self):
         return """ This Arabic language service expects a POST in the form '{"text":["journalists"]}'.
                 It returns word2vec 'synonyms' of the term in the form '["REPORTER","INTERVIEWER"]'
                 """
 
-    def get_synonyms(self, word, match_n = 20):
-    
-        word_combo = word #[word_upper, word_title, word_lower]
-    
+    def get_synonyms(self, word, match_n = 10):
+        word = re.sub(" ", "_", word)
+        word_combo = [word] #[word_upper, word_title, word_lower]
         results_list = []
         for w in word_combo:
             try:
@@ -44,9 +43,6 @@ class SynonymizeArAPI(Resource):
         args = self.reqparse.parse_args()
         x = args['text']
         words = ast.literal_eval(x)
-        print words
-        print type(words)
-        print len(words)
         if len(words) == 1:
             word = words[0]
             word = re.sub(" ", "_", word)
